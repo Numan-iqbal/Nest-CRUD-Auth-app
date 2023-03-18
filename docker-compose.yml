@@ -1,23 +1,27 @@
 version: '3'
 
 services:
-  db:
-    image: postgres
-    environment:
-      POSTGRES_DB: db
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: 1234
-    volumes:
-      - ./postgres-data:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
-
   app:
     build: .
     environment:
-      NODE_ENV: production
-      DATABASE_URL: postgres://user:1234@db/db
-    ports:
-      - 3000:3000
+      - PORT=3001
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=blogdb
+      - TYPEORM_SYNC=true
+      - JWT_EXPIRES_IN=7d
+      - JWT_SECRET=32ehiubfgvdf734hr0340rf3rif93yvfh834f0823f9h82vf38
     depends_on:
       - db
+    ports:
+      - '3001:3001'
+  db:
+    image: postgres
+    ports:
+      - '35000:5432'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=blogdb

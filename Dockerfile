@@ -1,66 +1,20 @@
-FROM node:16
+# Use an official Node.js runtime as a parent image
+FROM node:14-alpine
 
-# Create app directory
-WORKDIR /numan/src/app
+# Set the working directory to /app
+WORKDIR /src
 
-
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
+# Copy the package.json and package-lock.json files to the container
 COPY package*.json ./
 
+# Install dependencies
 RUN npm install
-# If you are building your code for production
-# RUN npm ci --only=production
 
-
-# Bundle app source
+# Copy the rest of the application files to the container
 COPY . .
 
-EXPOSE 8080
+# Expose the port that the application will listen on
+EXPOSE 3001
 
-RUN npm run build
-
-CMD [ "node", "dist/main" ]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# FROM node:14-alpine AS build
-
-# WORKDIR /app
-
-# COPY package*.json ./
-# RUN npm install
-# COPY . .
-
-# RUN npm run build
-
-# FROM node:14-alpine AS production
-# ENV NODE_ENV=production
-
-# WORKDIR /app
-
-# COPY package*.json ./
-# RUN npm install --only=production
-
-# COPY --from=build /app/dist ./dist
-
-# CMD ["npm", "run", "start:prod"]
+# Start the application
+CMD [ "npm", "start" ]

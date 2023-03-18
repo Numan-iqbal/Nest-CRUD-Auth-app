@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntiy } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { BlogEntity } from '../../entities/blog.entity';
+import { CreateBlogDto } from './dto/create-blog.dto';
+import { UpdateBlogDto } from './dto/update-blog.dto';
 
 @Injectable()
 export class BlogService {
@@ -19,13 +21,13 @@ export class BlogService {
     return this.blogRepository.findOne({ where: { id: id } });
   }
 
-  async add(blog: BlogEntity, user: UserEntiy): Promise<BlogEntity> {
+  async add(blog: CreateBlogDto, user: UserEntiy): Promise<BlogEntity> {
     return this.blogRepository.save({ ...blog, user });
   }
 
   async update(
     id: number,
-    blog: BlogEntity,
+    blog: UpdateBlogDto,
     user: UserEntiy,
   ): Promise<BlogEntity> {
     const blogDoc = await this.blogRepository.findOne({
@@ -34,6 +36,7 @@ export class BlogService {
         user: true,
       },
     });
+    console.log(blogDoc);
     const isAuthorized = blogDoc.user.id === user.id;
     if (!isAuthorized)
       throw new HttpException(

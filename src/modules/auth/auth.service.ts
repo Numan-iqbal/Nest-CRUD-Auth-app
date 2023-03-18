@@ -1,12 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntiy } from 'src/entities/user.entity';
+import { UserEntiy } from '../../entities/user.entity';
 import { EncryptionService } from './encrption.service';
-import { generateJwtToken } from 'src/utils/jwt.utils';
+import { generateJwtToken } from '../../utils/jwt.utils';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { UserRepository } from './dto/repository/user.repository';
-import { RoleEntity } from 'src/entities/role.entity';
+import { RoleEntity } from '../../entities/role.entity';
 import { RoleRepository } from './dto/repository/role.repository';
 
 @Injectable()
@@ -43,6 +43,8 @@ export class AuthService {
     };
   }
 
+
+  
   async register(userInput: RegisterDto) {
     const { email, password, roles } = userInput;
     const passwordHash = await this.encrytionService.hashPassword(password);
