@@ -20,22 +20,29 @@ export class AuthService {
   ) {}
   async login(authBody: LoginDto) {
     const { email, password } = authBody;
+
+    if (!email || !password)
+      throw new HttpException(
+        `Please Provide Email & Password`,
+        HttpStatus.BAD_REQUEST,
+      );
+
     const user = await this.userRepository.findOne({
       where: { email },
       relations: { roles: true },
     });
     if (!user)
       throw new HttpException(
-        'User Authentication Failed',
-        HttpStatus.UNAUTHORIZED,
+        `${email} does not belong to any user`,
+        HttpStatus.BAD_REQUEST,
       );
 
-    const doesPasswordMatch = await this.encrytionService.comparePassword(
+    const isPasswordCorrect = await this.encrytionService.comparePassword(
       password,
       user.passowrd,
     );
-    if (!doesPasswordMatch)
-      throw new HttpException('Inncorrect Password', HttpStatus.FORBIDDEN);
+    if (!isPasswordCorrect)
+      throw new HttpException('Inncorrect Email Or Pass', HttpStatus.FORBIDDEN);
     return {
       status: 200,
       success: true,
@@ -43,8 +50,6 @@ export class AuthService {
     };
   }
 
-
-  
   async register(userInput: RegisterDto) {
     const { email, password, roles } = userInput;
     const passwordHash = await this.encrytionService.hashPassword(password);
